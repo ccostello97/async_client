@@ -1,20 +1,31 @@
-import requests
+"""Unit tests for Async Client module."""
+
 from time import time
+
+import requests
 
 from async_client import AsyncClient
 
 
-def test_speed_improvement():
-    reqs = [{'method': 'get', 'url': f'https://pokeapi.co/api/v2/pokemon/{n}'} for n in range(1, 151)]
+def test_speed_improvement() -> None:
+    """Test that there is speed improvement from generic `requests` library.
+
+    :return: None
+    """
+    reqs = [
+        {"method": "get", "url": f"https://pokeapi.co/api/v2/pokemon/{n}"}
+        for n in range(1, 151)
+    ]
 
     generic_start_time = time()
     with requests.Session() as session:
-        [session.request(**req) for req in reqs]
+        for req in reqs:
+            session.request(**req)  # type: ignore
     generic_time_diff = time() - generic_start_time
 
     async_start_time = time()
-    session = AsyncClient()
-    session.execute(reqs)
+    async_client = AsyncClient()
+    async_client.execute(reqs)
     async_time_diff = time() - async_start_time
 
     assert async_time_diff < generic_time_diff
