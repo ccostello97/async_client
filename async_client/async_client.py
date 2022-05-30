@@ -11,7 +11,9 @@ JsonType = Dict[str, Any]
 RequestsType = List[JsonType]
 ResponseType = Union[JsonType, List[JsonType]]
 ResponsesType = List[ResponseType]
-RequestFuncType = Callable[[ClientSession, AsyncLimiter, JsonType], Awaitable[Any]]
+RequestFuncType = Callable[
+    [ClientSession, AsyncLimiter, JsonType], Awaitable[Any]
+]
 
 
 class DummyAsyncLimiter(AsyncLimiter):
@@ -90,7 +92,7 @@ class AsyncClient:
         :param request_func: user-defined function for making requests
         :param requests_per_period: max requests to make in rate limit period
         :param period_seconds: number of seconds in a rate limit period
-        :param max_connections: max number of concurrent connections to an endpoint
+        :param max_connections: max number of concurrent connections
         """
         self.request_func = request_func or async_request
         self.requests_per_period = requests_per_period
@@ -108,7 +110,7 @@ class AsyncClient:
         request: JsonType,
         responses: ResponsesType,
     ) -> None:
-        """Run the `request_func` and append the response to a list of responses.
+        """Run `request_func` and append the response to a list of responses.
 
         Populates `responses` with JSONs. In the instance that a custom UDF was
         provided to query an API with paginated results, you will populate
@@ -140,7 +142,9 @@ class AsyncClient:
             tasks = set()
             for request in requests:
                 tasks.add(
-                    asyncio.create_task(self.proc_request(session, request, responses))
+                    asyncio.create_task(
+                        self.proc_request(session, request, responses)
+                    )
                 )
             await asyncio.wait(tasks)
             return responses

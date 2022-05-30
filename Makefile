@@ -2,13 +2,13 @@ do_mypy:
 	mypy --strict async_client
 
 do_black:
-	black async_client
+	black -l 80 async_client
 
 do_pylint:
-	pylint async_client
+	pylint --max-line-length 80 async_client
 
 do_flake8:
-	flake8 async_client
+	flake8 --max-line-length 80 async_client
 
 do_pytest:
 	pytest tests
