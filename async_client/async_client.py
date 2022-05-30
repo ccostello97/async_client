@@ -16,6 +16,7 @@ RequestFuncType = Callable[[ClientSession, AsyncLimiter, JsonType], Awaitable[An
 
 class DummyAsyncLimiter(AsyncLimiter):
     """Dummy async rate limiter for when no rate limit is specified.
+
     Necessary because passing a `requests_per_period` of None to the
     regular AsyncLimiter throws an exception.
     """
@@ -50,7 +51,9 @@ class DummyAsyncLimiter(AsyncLimiter):
 async def async_request(
     session: ClientSession, rate_limit: AsyncLimiter, payload: JsonType
 ) -> Any:
-    """Make basic request. This function can be substituted with a
+    """Make basic request.
+
+    This function can be substituted with a
     UDF with the `request_func` argument to AsyncClient in instances
     where a custom logic is required, such as when querying APIs using
     pagination. In such cases, this function can still be used for
@@ -69,8 +72,11 @@ async def async_request(
 
 
 class AsyncClient:
-    """Async requests client for making requests as quickly as possible
-    while still respecting endpoint constraints."""
+    """Async requests client.
+
+    For making requests as quickly as possible while still respecting endpoint
+    constraints.
+    """
 
     def __init__(
         self,
@@ -103,6 +109,7 @@ class AsyncClient:
         responses: ResponsesType,
     ) -> None:
         """Run the `request_func` and append the response to a list of responses.
+
         Populates `responses` with JSONs. In the instance that a custom UDF was
         provided to query an API with paginated results, you will populate
         `responses` with lists of JSONs that can be flattened later.
@@ -116,7 +123,9 @@ class AsyncClient:
         responses.append(response)
 
     async def async_main(self, requests: RequestsType) -> ResponsesType:
-        """Create tasks for every request. In the instance that you
+        """Create tasks for every request.
+
+        In the instance that you
         are querying a paginated API, these will only be the root request,
         the paginated requests cannot be done asynchronously. They must be
         done sequentially as each request hinges on the results of the
